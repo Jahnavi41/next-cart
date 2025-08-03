@@ -3,6 +3,7 @@ package dev.ju.nextcart.service.product;
 import dev.ju.nextcart.exceptions.BadRequestException;
 import dev.ju.nextcart.model.Category;
 import dev.ju.nextcart.model.Product;
+import dev.ju.nextcart.repository.CategoryRepository;
 import dev.ju.nextcart.repository.ProductRepository;
 import dev.ju.nextcart.request.AddProductRequest;
 import org.springframework.stereotype.Service;
@@ -13,14 +14,25 @@ import java.util.List;
 public class ProductService implements IProductService{
 
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
     public Product addProduct(AddProductRequest product) {
-        return null;
+        Category category = categoryRepository.findByName(product.getCategory())
+                .orElseGet(() ->
+                {
+                    Category category1 = new Category();
+                    category1.setName(product.getCategory().getName());
+                    return categoryRepository.save(category1);
+                });
+
+        product.setCategory(category);
+        return productRepository.save(createProduct(product));
     }
 
     @Override
@@ -75,14 +87,14 @@ public class ProductService implements IProductService{
         return productRepository.countByBrandAndName(brand, name);
     }
 
-    private Product createProduct(AddProductRequest request, Category category) {
+    private Product createProduct(AddProductRequest request) {
         return new Product(
                 request.getName(),
                 request.getBrand(),
                 request.getPrice(),
                 request.getInventory(),
                 request.getDescription(),
-                category
+                request.getCategory()
         );
     }
 }
