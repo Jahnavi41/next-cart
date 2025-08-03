@@ -1,8 +1,10 @@
 package dev.ju.nextcart.service.product;
 
 import dev.ju.nextcart.exceptions.BadRequestException;
+import dev.ju.nextcart.model.Category;
 import dev.ju.nextcart.model.Product;
 import dev.ju.nextcart.repository.ProductRepository;
+import dev.ju.nextcart.request.AddProductRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +19,7 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public Product addProduct(Product product) {
+    public Product addProduct(AddProductRequest product) {
         return null;
     }
 
@@ -71,5 +73,16 @@ public class ProductService implements IProductService{
     @Override
     public Long countProductsByBrandAndName(String brand, String name) {
         return productRepository.countByBrandAndName(brand, name);
+    }
+
+    private Product createProduct(AddProductRequest request, Category category) {
+        return new Product(
+                request.getName(),
+                request.getBrand(),
+                request.getPrice(),
+                request.getInventory(),
+                request.getDescription(),
+                category
+        );
     }
 }
