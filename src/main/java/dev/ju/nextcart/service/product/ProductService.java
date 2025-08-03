@@ -6,6 +6,7 @@ import dev.ju.nextcart.model.Product;
 import dev.ju.nextcart.repository.CategoryRepository;
 import dev.ju.nextcart.repository.ProductRepository;
 import dev.ju.nextcart.request.AddProductRequest;
+import dev.ju.nextcart.request.UpdateProductRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,8 +49,11 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public void updateProduct(Product product, Long productId) {
-
+    public Product updateProduct(UpdateProductRequest request, Long productId) {
+        return productRepository.findById(productId)
+                .map(existingProduct -> updateExistingProduct(existingProduct, request))
+                .map(productRepository :: save)
+                .orElseThrow( () -> new BadRequestException("Product with ID: "+productId+" does not exist!"));
     }
 
     @Override
@@ -96,5 +100,17 @@ public class ProductService implements IProductService{
                 request.getDescription(),
                 request.getCategory()
         );
+    }
+
+    private Product updateExistingProduct(Product existingProduct, UpdateProductRequest request) {
+        existingProduct.setName(request.getName());
+        existingProduct.setBrand(request.getBrand());
+        existingProduct.setDescription(request.getDescription());
+        existingProduct.setPrice(request.getPrice());
+        existingProduct.setInventory(request.getInventory());
+
+        Category category = categoryRepository.findByName(request.getCategory()).orElseThrow( () -> new BadRequestException("Product could not be updated as given category: "+request.getCategory().getName()+" does not exist!"));
+        existingProduct.setCategory(category);
+        return existingProduct;
     }
 }

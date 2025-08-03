@@ -2,6 +2,7 @@ package dev.ju.nextcart.service.product;
 
 import dev.ju.nextcart.model.Product;
 import dev.ju.nextcart.request.AddProductRequest;
+import dev.ju.nextcart.request.UpdateProductRequest;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ public interface IProductService {
     Product addProduct(AddProductRequest product);
     Product getProductById(Long id);
     void deleteProductById(Long id);
-    void updateProduct(Product product, Long productId);
+    Product updateProduct(UpdateProductRequest request, Long productId);
 
     List<Product> getAllProducts();
     List<Product> getProductByCategoryName(String categoryName);
