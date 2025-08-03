@@ -28,7 +28,9 @@ public class ProductService implements IProductService{
 
     @Override
     public void deleteProductById(Long id) {
-        return;
+        productRepository.findById(id)
+                .ifPresentOrElse(productRepository :: delete,
+                        () -> {throw new BadRequestException("Product with ID: "+id+" does not exist!");});
     }
 
     @Override
