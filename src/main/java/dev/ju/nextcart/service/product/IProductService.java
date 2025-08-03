@@ -1,11 +1,12 @@
 package dev.ju.nextcart.service.product;
 
 import dev.ju.nextcart.model.Product;
+import dev.ju.nextcart.request.AddProductRequest;
 
 import java.util.List;
 
 public interface IProductService {
-    Product addProduct(Product product);
+    Product addProduct(AddProductRequest product);
     Product getProductById(Long id);
     void deleteProductById(Long id);
     void updateProduct(Product product, Long productId);
