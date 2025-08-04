@@ -10,5 +10,5 @@ public interface IImageService {
     Image getImageById(Long imageId);
     void deleteImageById(Long imageId);
     List<ImageDTO> saveImage(List<MultipartFile> files, Long productId);
-    void updateImage(MultipartFile file, Long imageId);
+    Image updateImage(MultipartFile file, Long imageId);
 }
