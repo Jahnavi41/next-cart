@@ -9,6 +9,6 @@ import java.util.List;
 public interface IImageService {
     Image getImageById(Long imageId);
     void deleteImageById(Long imageId);
-    List<ImageDTO> saveImage(List<MultipartFile> files, Long imageId);
-    void updateImage(MultipartFile file, Long productId);
+    List<ImageDTO> saveImage(List<MultipartFile> files, Long productId);
+    void updateImage(MultipartFile file, Long imageId);
 }
