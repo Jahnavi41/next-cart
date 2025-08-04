@@ -5,7 +5,6 @@ import dev.ju.nextcart.model.Category;
 import dev.ju.nextcart.repository.CategoryRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 public class CategoryService implements ICategoryService{
 
