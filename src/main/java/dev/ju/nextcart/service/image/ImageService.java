@@ -43,8 +43,8 @@ public class ImageService implements IImageService{
     }
 
     @Override
-    public List<ImageDTO> saveImage(List<MultipartFile> files, Long productId) {
-        Product product = productService.getProductById(productId);
+    public List<ImageDTO> saveImage(List<MultipartFile> files, Long imageId) {
+        Product product = productService.getProductById(imageId);
         List<ImageDTO> savedImageDTO = new ArrayList<>();
         for(MultipartFile file : files) {
             try {
@@ -76,8 +76,8 @@ public class ImageService implements IImageService{
     }
 
     @Override
-    public void updateImage(MultipartFile file, Long productId) {
-        Image image = getImageById(productId);
+    public void updateImage(MultipartFile file, Long imageId) {
+        Image image = getImageById(imageId);
         try {
             image.setFileName(file.getOriginalFilename());
             image.setFileType(file.getContentType());
