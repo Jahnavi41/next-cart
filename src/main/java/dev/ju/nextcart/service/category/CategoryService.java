@@ -5,6 +5,7 @@ import dev.ju.nextcart.model.Category;
 import dev.ju.nextcart.repository.CategoryRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public class CategoryService implements ICategoryService{
 
@@ -26,21 +27,29 @@ public class CategoryService implements ICategoryService{
 
     @Override
     public List<Category> getAllCategories() {
-        return List.of();
+        return categoryRepository.findAll();
     }
 
     @Override
     public Category addCategory(Category category) {
-        return null;
+        if(categoryRepository.existsByName(category.getName())) {
+            throw new BadRequestException("Category already exists!");
+        }
+        return categoryRepository.save(category);
     }
 
     @Override
     public Category updateCategory(Category category, Long categoryId) {
-        return null;
+        return categoryRepository.findById(categoryId)
+                .map(oldCategory -> {
+                    oldCategory.setName(category.getName());
+                    return categoryRepository.save(oldCategory);
+                }).orElseThrow(() -> new BadRequestException("Category not found!"));
     }
 
     @Override
     public void deleteCategoryById(Long categoryId) {
-
+        categoryRepository.findById(categoryId)
+                .ifPresentOrElse(categoryRepository :: delete, () -> {throw new BadRequestException("Category with ID: "+categoryId+" does not exist!");});
     }
 }
