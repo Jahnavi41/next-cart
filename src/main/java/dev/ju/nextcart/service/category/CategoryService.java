@@ -3,9 +3,11 @@ package dev.ju.nextcart.service.category;
 import dev.ju.nextcart.exceptions.BadRequestException;
 import dev.ju.nextcart.model.Category;
 import dev.ju.nextcart.repository.CategoryRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class CategoryService implements ICategoryService{
 
     private final CategoryRepository categoryRepository;
