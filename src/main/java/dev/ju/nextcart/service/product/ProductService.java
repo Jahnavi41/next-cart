@@ -24,7 +24,7 @@ public class ProductService implements IProductService{
 
     @Override
     public Product addProduct(AddProductRequest product) {
-        Category category = categoryRepository.findByName(product.getCategory())
+        Category category = categoryRepository.findByName(product.getCategory().getName())
                 .orElseGet(() ->
                 {
                     Category category1 = new Category();
@@ -33,7 +33,7 @@ public class ProductService implements IProductService{
                 });
 
         product.setCategory(category);
-        return productRepository.save(createProduct(product));
+        return productRepository.save(createProduct(product, category));
     }
 
     @Override
@@ -91,14 +91,14 @@ public class ProductService implements IProductService{
         return productRepository.countByBrandAndName(brand, name);
     }
 
-    private Product createProduct(AddProductRequest request) {
+    private Product createProduct(AddProductRequest request, Category category) {
         return new Product(
                 request.getName(),
                 request.getBrand(),
                 request.getPrice(),
                 request.getInventory(),
                 request.getDescription(),
-                request.getCategory()
+                category
         );
     }
 
@@ -109,7 +109,7 @@ public class ProductService implements IProductService{
         existingProduct.setPrice(request.getPrice());
         existingProduct.setInventory(request.getInventory());
 
-        Category category = categoryRepository.findByName(request.getCategory()).orElseThrow( () -> new BadRequestException("Product could not be updated as given category: "+request.getCategory().getName()+" does not exist!"));
+        Category category = categoryRepository.findByName(request.getCategory().getName()).orElseThrow( () -> new BadRequestException("Product could not be updated as given category: "+request.getCategory().getName()+" does not exist!"));
         existingProduct.setCategory(category);
         return existingProduct;
     }
