@@ -62,4 +62,14 @@ public class ProductController {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
         }
     }
+
+    @DeleteMapping("/delete/{productId}")
+    public ResponseEntity<ApiResponse> deleteProduct(@PathVariable Long productId) {
+        try {
+            productService.deleteProductById(productId);
+            return ResponseEntity.ok(new ApiResponse("Product deleted successfully!", productId));
+        } catch (BadRequestException e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
 }
