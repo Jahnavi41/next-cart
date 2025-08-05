@@ -1,6 +1,7 @@
 package dev.ju.nextcart.controller;
 
 import dev.ju.nextcart.dto.ImageDTO;
+import dev.ju.nextcart.exceptions.BadRequestException;
 import dev.ju.nextcart.model.Image;
 import dev.ju.nextcart.response.ApiResponse;
 import dev.ju.nextcart.service.image.IImageService;
@@ -20,6 +21,7 @@ import java.util.List;
 @RequestMapping("${api.prefix}/images")
 public class ImageController {
     public static final HttpStatus INTERNAL_SERVER_ERROR = HttpStatus.INTERNAL_SERVER_ERROR;
+    public static final HttpStatus NOT_FOUND = HttpStatus.NOT_FOUND;
     private final IImageService imageService;
 
     public ImageController(IImageService imageService) {
@@ -49,5 +51,18 @@ public class ImageController {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public ResponseEntity<ApiResponse> updateImage(@PathVariable Long imageId, @RequestParam MultipartFile file) {
+        try {
+            Image image = imageService.getImageById(imageId);
+            if(image == null) {
+                imageService.updateImage(file, imageId);
+                return ResponseEntity.ok(new ApiResponse("Update Success!", null));
+            }
+        } catch (BadRequestException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse("Update Failed!",null));
     }
 }
