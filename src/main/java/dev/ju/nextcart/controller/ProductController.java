@@ -53,5 +53,13 @@ public class ProductController {
         }
     }
 
-
+    @PutMapping("/update/{productId}")
+    public ResponseEntity<ApiResponse> updateProduct(@RequestBody UpdateProductRequest request, @PathVariable Long productId) {
+        try {
+            Product product = productService.updateProduct(request, productId);
+            return ResponseEntity.ok(new ApiResponse("Product updated successfully!", product));
+        } catch (BadRequestException e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
 }
