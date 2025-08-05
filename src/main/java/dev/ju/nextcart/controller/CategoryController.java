@@ -40,4 +40,14 @@ public class CategoryController {
             return ResponseEntity.status(CONFLICT).body(new ApiResponse("Could not add category!", INTERNAL_SERVER_ERROR));
         }
     }
+
+    @GetMapping("/category/{id}/category")
+    public ResponseEntity<ApiResponse> getCategoryById(@PathVariable Long id) {
+        try {
+            Category category = categoryService.getCategoryById(id);
+            return ResponseEntity.ok(new ApiResponse("Category found!", category));
+        } catch (BadRequestException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
 }
