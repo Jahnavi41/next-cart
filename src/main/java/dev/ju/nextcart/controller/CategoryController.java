@@ -21,7 +21,7 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("/getAllCategories")
+    @GetMapping
     public ResponseEntity<ApiResponse> getAllCategories() {
         try {
             List<Category> categories = categoryService.getAllCategories();
@@ -31,7 +31,7 @@ public class CategoryController {
         }
     }
 
-    @PostMapping("/addCategories")
+    @PostMapping
     public ResponseEntity<ApiResponse> addCategory(@RequestBody Category name) {
         try {
             Category category = categoryService.addCategory(name);
@@ -41,7 +41,7 @@ public class CategoryController {
         }
     }
 
-    @GetMapping("/category/{id}/category")
+    @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getCategoryById(@PathVariable Long id) {
         try {
             Category category = categoryService.getCategoryById(id);
@@ -51,7 +51,7 @@ public class CategoryController {
         }
     }
 
-    @GetMapping("/{name}/category")
+    @GetMapping("name/{name}")
     public ResponseEntity<ApiResponse> getCategoryByName(@PathVariable String name) {
         try {
             Category category = categoryService.getCategoryByName(name);
@@ -61,7 +61,7 @@ public class CategoryController {
         }
     }
 
-    @DeleteMapping("/category/{id}/category")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteByCategory(@PathVariable Long id) {
         try {
             categoryService.deleteCategoryById(id);
