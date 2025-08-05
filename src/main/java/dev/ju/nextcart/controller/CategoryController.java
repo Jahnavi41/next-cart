@@ -6,10 +6,7 @@ import dev.ju.nextcart.response.ApiResponse;
 import dev.ju.nextcart.service.category.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,5 +31,13 @@ public class CategoryController {
         }
     }
 
-
+    @PostMapping("/addCategories")
+    public ResponseEntity<ApiResponse> addCategory(@RequestBody Category name) {
+        try {
+            Category category = categoryService.addCategory(name);
+            return ResponseEntity.ok(new ApiResponse("Added category successfully!", category));
+        } catch (BadRequestException e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse("Could not add category!", INTERNAL_SERVER_ERROR));
+        }
+    }
 }
