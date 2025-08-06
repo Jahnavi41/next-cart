@@ -111,4 +111,17 @@ public class ProductController {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
         }
     }
+
+    @GetMapping("/{categoryName}")
+    public ResponseEntity<ApiResponse> getProductsByCategoryName(@PathVariable String categoryName) {
+        try {
+            List<Product> products = productService.getProductByCategoryName(categoryName);
+            if(products.isEmpty()) {
+                return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("Products not found!", null));
+            }
+            return ResponseEntity.ok(new ApiResponse("Products found!", products));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
 }
