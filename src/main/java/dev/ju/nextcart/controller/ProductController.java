@@ -72,4 +72,14 @@ public class ProductController {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
         }
     }
+
+    @GetMapping("/{brandName}/{productName}")
+    public ResponseEntity<ApiResponse> getProductsByBrandAndName(@PathVariable String brandName, @PathVariable String productName) {
+        try {
+            List<Product> products = productService.getProductByBrandAndName(brandName, productName);
+            return ResponseEntity.ok(new ApiResponse("Products found!", products));
+        } catch (BadRequestException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
 }
