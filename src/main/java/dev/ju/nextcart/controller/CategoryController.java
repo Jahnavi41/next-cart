@@ -1,6 +1,5 @@
 package dev.ju.nextcart.controller;
 
-import dev.ju.nextcart.exceptions.BadRequestException;
 import dev.ju.nextcart.model.Category;
 import dev.ju.nextcart.response.ApiResponse;
 import dev.ju.nextcart.service.category.CategoryService;
@@ -23,61 +22,37 @@ public class CategoryController {
 
     @GetMapping
     public ResponseEntity<ApiResponse> getAllCategories() {
-        try {
-            List<Category> categories = categoryService.getAllCategories();
-            return ResponseEntity.ok(new ApiResponse("Categories found!", categories));
-        } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse("Could not fetch all categories!", INTERNAL_SERVER_ERROR));
-        }
+        List<Category> categories = categoryService.getAllCategories();
+        return ResponseEntity.ok(new ApiResponse("Categories found!", categories));
     }
 
     @PostMapping
     public ResponseEntity<ApiResponse> addCategory(@RequestBody Category request) {
-        try {
-            Category category = categoryService.addCategory(request);
-            return ResponseEntity.ok(new ApiResponse("Added category successfully!", category));
-        } catch (BadRequestException e) {
-            return ResponseEntity.status(CONFLICT).body(new ApiResponse("Could not add category!", null));
-        }
+        Category category = categoryService.addCategory(request);
+        return ResponseEntity.ok(new ApiResponse("Added category successfully!", category));
     }
 
     @PutMapping("/{categoryId}")
     public ResponseEntity<ApiResponse> updateCategory(@RequestBody Category request, @PathVariable Long categoryId) {
-        try {
-            Category category = categoryService.updateCategory(request, categoryId);
-            return ResponseEntity.ok(new ApiResponse("Updated category successfully!", category));
-        } catch (BadRequestException e) {
-            return ResponseEntity.status(CONFLICT).body(new ApiResponse("Could not update category!", INTERNAL_SERVER_ERROR));
-        }
+        Category category = categoryService.updateCategory(request, categoryId);
+        return ResponseEntity.ok(new ApiResponse("Updated category successfully!", category));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getCategoryById(@PathVariable Long id) {
-        try {
-            Category category = categoryService.getCategoryById(id);
-            return ResponseEntity.ok(new ApiResponse("Category found!", category));
-        } catch (BadRequestException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        }
+        Category category = categoryService.getCategoryById(id);
+        return ResponseEntity.ok(new ApiResponse("Category found!", category));
     }
 
     @GetMapping("by-name/{name}")
     public ResponseEntity<ApiResponse> getCategoryByName(@PathVariable String name) {
-        try {
-            Category category = categoryService.getCategoryByName(name);
-            return ResponseEntity.ok(new ApiResponse("Category found!", category));
-        } catch (BadRequestException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        }
+        Category category = categoryService.getCategoryByName(name);
+        return ResponseEntity.ok(new ApiResponse("Category found!", category));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteByCategory(@PathVariable Long id) {
-        try {
-            categoryService.deleteCategoryById(id);
-            return ResponseEntity.ok(new ApiResponse("Category deleted successfully!!", null));
-        } catch (BadRequestException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        }
+        categoryService.deleteCategoryById(id);
+        return ResponseEntity.ok(new ApiResponse("Category deleted successfully!!", null));
     }
 }
