@@ -138,7 +138,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{brand}/{productName")
+    @GetMapping("/{brand}/{productName}")
     public ResponseEntity<ApiResponse> countByBrandAndName(@PathVariable String brand, @PathVariable String productName) {
         try {
             Long count = productService.countProductsByBrandAndName(brand, productName);
