@@ -37,7 +37,7 @@ public class CategoryController {
             Category category = categoryService.addCategory(request);
             return ResponseEntity.ok(new ApiResponse("Added category successfully!", category));
         } catch (BadRequestException e) {
-            return ResponseEntity.status(CONFLICT).body(new ApiResponse("Could not add category!", INTERNAL_SERVER_ERROR));
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse("Could not add category!", null));
         }
     }
 
