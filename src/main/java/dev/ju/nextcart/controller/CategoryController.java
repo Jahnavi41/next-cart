@@ -32,12 +32,22 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse> addCategory(@RequestBody Category name) {
+    public ResponseEntity<ApiResponse> addCategory(@RequestBody Category request) {
         try {
-            Category category = categoryService.addCategory(name);
+            Category category = categoryService.addCategory(request);
             return ResponseEntity.ok(new ApiResponse("Added category successfully!", category));
         } catch (BadRequestException e) {
             return ResponseEntity.status(CONFLICT).body(new ApiResponse("Could not add category!", INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    @PutMapping("/{categoryId}")
+    public ResponseEntity<ApiResponse> updateCategory(@RequestBody Category request, @PathVariable Long categoryId) {
+        try {
+            Category category = categoryService.updateCategory(request, categoryId);
+            return ResponseEntity.ok(new ApiResponse("Updated category successfully!", category));
+        } catch (BadRequestException e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse("Could not update category!", INTERNAL_SERVER_ERROR));
         }
     }
 
