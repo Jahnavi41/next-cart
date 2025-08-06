@@ -137,4 +137,14 @@ public class ProductController {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
         }
     }
+
+    @GetMapping("/{brand}/{productName")
+    public ResponseEntity<ApiResponse> countByBrandAndName(@PathVariable String brand, @PathVariable String productName) {
+        try {
+            Long count = productService.countProductsByBrandAndName(brand, productName);
+            return ResponseEntity.ok(new ApiResponse("Products found!", count));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
 }
