@@ -27,7 +27,9 @@ public class ProductController {
 
     @GetMapping("/getAll")
     public ResponseEntity<ApiResponse> getAllProducts() {
+        log.info("Received request: getAllProducts");
         List<Product> products = productService.getAllProducts();
+        log.debug("Products fetched: {}", products.size());
         return ResponseEntity.ok(new ApiResponse("Products found!", products));
     }
 
