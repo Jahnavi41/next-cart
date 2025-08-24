@@ -6,12 +6,14 @@ import dev.ju.nextcart.request.AddProductRequest;
 import dev.ju.nextcart.request.UpdateProductRequest;
 import dev.ju.nextcart.response.ApiResponse;
 import dev.ju.nextcart.service.product.ProductService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("${api.prefix}/products")
 public class ProductController {
@@ -23,17 +25,13 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping
+    @GetMapping("/getAll")
     public ResponseEntity<ApiResponse> getAllProducts() {
-        try {
-            List<Product> products = productService.getAllProducts();
-            return ResponseEntity.ok(new ApiResponse("Products found!", products));
-        } catch (BadRequestException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), NOT_FOUND));
-        }
+        List<Product> products = productService.getAllProducts();
+        return ResponseEntity.ok(new ApiResponse("Products found!", products));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getById")
     public ResponseEntity<ApiResponse> getProductById(@PathVariable Long id) {
         try {
             Product product = productService.getProductById(id);
@@ -43,17 +41,15 @@ public class ProductController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ApiResponse> addProduct(@RequestBody AddProductRequest product) {
-        try {
-            Product createdProduct = productService.addProduct(product);
-            return ResponseEntity.ok(new ApiResponse("Product created successfully!", createdProduct));
-        } catch (BadRequestException e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
-        }
+        System.out.println("Controller hit!");
+        Product createdProduct = productService.addProduct(product);
+        log.info("Controller entered!");
+        return ResponseEntity.ok(new ApiResponse("Product created successfully!", createdProduct));
     }
 
-    @PutMapping("/{productId}")
+    @PutMapping("/update")
     public ResponseEntity<ApiResponse> updateProduct(@RequestBody UpdateProductRequest request, @PathVariable Long productId) {
         try {
             Product product = productService.updateProduct(request, productId);
@@ -63,7 +59,7 @@ public class ProductController {
         }
     }
 
-    @DeleteMapping("/{productId}")
+    @DeleteMapping("/delete")
     public ResponseEntity<ApiResponse> deleteProduct(@PathVariable Long productId) {
         try {
             productService.deleteProductById(productId);
@@ -73,7 +69,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{brandName}/{productName}")
+    @GetMapping("/getByBrandAndName")
     public ResponseEntity<ApiResponse> getProductsByBrandAndName(@PathVariable String brandName, @PathVariable String productName) {
         try {
             List<Product> products = productService.getProductByBrandAndName(brandName, productName);
@@ -86,7 +82,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{brand}")
+    @GetMapping("/getByBrand")
     public ResponseEntity<ApiResponse> getProductsByBrand(@PathVariable String brand) {
         try {
             List<Product> products = productService.getProductByBrand(brand);
@@ -99,7 +95,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{productName}")
+    @GetMapping("/getByProductName")
     public ResponseEntity<ApiResponse> getProductsByName(@PathVariable String productName) {
         try {
             List<Product> products = productService.getProductsByName(productName);
@@ -112,7 +108,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{categoryName}")
+    @GetMapping("/getByCategoryName")
     public ResponseEntity<ApiResponse> getProductsByCategoryName(@PathVariable String categoryName) {
         try {
             List<Product> products = productService.getProductByCategoryName(categoryName);
@@ -125,7 +121,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{category}/{brand}")
+    @GetMapping("getByCategoryAndBrand")
     public ResponseEntity<ApiResponse> getProductsByCategoryAndBrand(@PathVariable String category, @PathVariable String brand) {
         try {
             List<Product> products = productService.getProductsByCategoryAndBrand(category, brand);
@@ -138,7 +134,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{brand}/{productName}")
+    @GetMapping("/getByBrandProductName")
     public ResponseEntity<ApiResponse> countByBrandAndName(@PathVariable String brand, @PathVariable String productName) {
         try {
             Long count = productService.countProductsByBrandAndName(brand, productName);
