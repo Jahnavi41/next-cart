@@ -61,7 +61,7 @@ public class ProductController {
         }
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete/{productId}")
     public ResponseEntity<ApiResponse> deleteProduct(@PathVariable Long productId) {
         try {
             productService.deleteProductById(productId);
@@ -136,7 +136,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/getByBrandProductName")
+    @GetMapping("/countByBrandProductName")
     public ResponseEntity<ApiResponse> countByBrandAndName(@RequestParam String brand, @RequestParam String productName) {
         try {
             Long count = productService.countProductsByBrandAndName(brand, productName);
