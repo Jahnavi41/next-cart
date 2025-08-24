@@ -27,12 +27,12 @@ public class ProductService implements IProductService{
     @Override
     public Product addProduct(AddProductRequest product) {
         log.info("entered service");
-        Category category = categoryRepository.findByName(product.getCategory().getName())
+        Category category = categoryRepository.findByName(product.getCategory())
                 .orElseGet(() ->
                 {
                     log.info("creating new category");
                     Category category1 = new Category();
-                    category1.setName(product.getCategory().getName());
+                    category1.setName(product.getCategory());
                     return categoryRepository.save(category1);
                 });
         log.info("saving it!");
