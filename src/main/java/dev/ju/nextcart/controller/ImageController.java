@@ -28,10 +28,11 @@ public class ImageController {
         this.imageService = imageService;
     }
 
-    @PostMapping("/upload")
+    @PostMapping(value = "/upload",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse> saveImages(@RequestParam List<MultipartFile> files, @RequestParam Long productId) {
         try {
-            List<ImageDTO> imageDTOS = imageService.saveImage(files, productId);
+            List<ImageDTO> imageDTOS = imageService.saveImage(productId, files);
             return ResponseEntity.ok(new ApiResponse("Images uploaded successfully!", imageDTOS));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse("Image uploading failed!", e.getMessage()));
@@ -53,7 +54,8 @@ public class ImageController {
         }
     }
 
-    @PutMapping("/update/{imageId}")
+    @PutMapping(value = "/update/{imageId}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse> updateImage(@PathVariable Long imageId, @RequestParam MultipartFile file) {
         try {
             Image image = imageService.getImageById(imageId);
