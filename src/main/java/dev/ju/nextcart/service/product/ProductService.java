@@ -7,10 +7,12 @@ import dev.ju.nextcart.repository.CategoryRepository;
 import dev.ju.nextcart.repository.ProductRepository;
 import dev.ju.nextcart.request.AddProductRequest;
 import dev.ju.nextcart.request.UpdateProductRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class ProductService implements IProductService{
 
@@ -24,15 +26,16 @@ public class ProductService implements IProductService{
 
     @Override
     public Product addProduct(AddProductRequest product) {
-        Category category = categoryRepository.findByName(product.getCategory().getName())
+        log.info("entered service");
+        Category category = categoryRepository.findByName(product.getCategory())
                 .orElseGet(() ->
                 {
+                    log.info("creating new category");
                     Category category1 = new Category();
-                    category1.setName(product.getCategory().getName());
+                    category1.setName(product.getCategory());
                     return categoryRepository.save(category1);
                 });
-
-        product.setCategory(category);
+        log.info("saving it!");
         return productRepository.save(createProduct(product, category));
     }
 

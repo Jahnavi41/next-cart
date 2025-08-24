@@ -6,12 +6,14 @@ import dev.ju.nextcart.request.AddProductRequest;
 import dev.ju.nextcart.request.UpdateProductRequest;
 import dev.ju.nextcart.response.ApiResponse;
 import dev.ju.nextcart.service.product.ProductService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("${api.prefix}/products")
 public class ProductController {
@@ -23,17 +25,15 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping
+    @GetMapping("/getAll")
     public ResponseEntity<ApiResponse> getAllProducts() {
-        try {
-            List<Product> products = productService.getAllProducts();
-            return ResponseEntity.ok(new ApiResponse("Products found!", products));
-        } catch (BadRequestException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), NOT_FOUND));
-        }
+        log.info("Received request: getAllProducts");
+        List<Product> products = productService.getAllProducts();
+        log.debug("Products fetched: {}", products.size());
+        return ResponseEntity.ok(new ApiResponse("Products found!", products));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getById/{id}")
     public ResponseEntity<ApiResponse> getProductById(@PathVariable Long id) {
         try {
             Product product = productService.getProductById(id);
@@ -43,17 +43,15 @@ public class ProductController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ApiResponse> addProduct(@RequestBody AddProductRequest product) {
-        try {
-            Product createdProduct = productService.addProduct(product);
-            return ResponseEntity.ok(new ApiResponse("Product created successfully!", createdProduct));
-        } catch (BadRequestException e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
-        }
+        System.out.println("Controller hit!");
+        Product createdProduct = productService.addProduct(product);
+        log.info("Controller entered!");
+        return ResponseEntity.ok(new ApiResponse("Product created successfully!", createdProduct));
     }
 
-    @PutMapping("/{productId}")
+    @PutMapping("/update/{productId}")
     public ResponseEntity<ApiResponse> updateProduct(@RequestBody UpdateProductRequest request, @PathVariable Long productId) {
         try {
             Product product = productService.updateProduct(request, productId);
@@ -63,7 +61,7 @@ public class ProductController {
         }
     }
 
-    @DeleteMapping("/{productId}")
+    @DeleteMapping("/delete/{productId}")
     public ResponseEntity<ApiResponse> deleteProduct(@PathVariable Long productId) {
         try {
             productService.deleteProductById(productId);
@@ -73,8 +71,8 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{brandName}/{productName}")
-    public ResponseEntity<ApiResponse> getProductsByBrandAndName(@PathVariable String brandName, @PathVariable String productName) {
+    @GetMapping("/getByBrandAndName")
+    public ResponseEntity<ApiResponse> getProductsByBrandAndName(@RequestParam String brandName, @RequestParam String productName) {
         try {
             List<Product> products = productService.getProductByBrandAndName(brandName, productName);
             if(products.isEmpty()) {
@@ -86,8 +84,8 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{brand}")
-    public ResponseEntity<ApiResponse> getProductsByBrand(@PathVariable String brand) {
+    @GetMapping("/getByBrand")
+    public ResponseEntity<ApiResponse> getProductsByBrand(@RequestParam String brand) {
         try {
             List<Product> products = productService.getProductByBrand(brand);
             if(products.isEmpty()) {
@@ -99,8 +97,8 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{productName}")
-    public ResponseEntity<ApiResponse> getProductsByName(@PathVariable String productName) {
+    @GetMapping("/getByProductName")
+    public ResponseEntity<ApiResponse> getProductsByName(@RequestParam String productName) {
         try {
             List<Product> products = productService.getProductsByName(productName);
             if(products.isEmpty()) {
@@ -112,8 +110,8 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{categoryName}")
-    public ResponseEntity<ApiResponse> getProductsByCategoryName(@PathVariable String categoryName) {
+    @GetMapping("/getByCategoryName")
+    public ResponseEntity<ApiResponse> getProductsByCategoryName(@RequestParam String categoryName) {
         try {
             List<Product> products = productService.getProductByCategoryName(categoryName);
             if(products.isEmpty()) {
@@ -125,8 +123,8 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{category}/{brand}")
-    public ResponseEntity<ApiResponse> getProductsByCategoryAndBrand(@PathVariable String category, @PathVariable String brand) {
+    @GetMapping("getByCategoryAndBrand")
+    public ResponseEntity<ApiResponse> getProductsByCategoryAndBrand(@RequestParam String category, @RequestParam String brand) {
         try {
             List<Product> products = productService.getProductsByCategoryAndBrand(category, brand);
             if(products.isEmpty()) {
@@ -138,8 +136,8 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{brand}/{productName}")
-    public ResponseEntity<ApiResponse> countByBrandAndName(@PathVariable String brand, @PathVariable String productName) {
+    @GetMapping("/countByBrandProductName")
+    public ResponseEntity<ApiResponse> countByBrandAndName(@RequestParam String brand, @RequestParam String productName) {
         try {
             Long count = productService.countProductsByBrandAndName(brand, productName);
             return ResponseEntity.ok(new ApiResponse("Products found!", count));

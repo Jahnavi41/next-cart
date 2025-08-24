@@ -6,6 +6,7 @@ import dev.ju.nextcart.model.Image;
 import dev.ju.nextcart.model.Product;
 import dev.ju.nextcart.repository.ImageRepository;
 import dev.ju.nextcart.service.product.ProductService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +27,7 @@ public class ImageService implements IImageService{
         this.productService = productService;
     }
 
+    @Transactional
     @Override
     public Image getImageById(Long imageId) {
         return imageRepository.findById(imageId)
@@ -43,10 +45,11 @@ public class ImageService implements IImageService{
     }
 
     @Override
-    public List<ImageDTO> saveImage(List<MultipartFile> files, Long productId) {
+    public List<ImageDTO> saveImage( Long productId,   List<MultipartFile> files) {
         Product product = productService.getProductById(productId);
-        List<ImageDTO> savedImageDTO = new ArrayList<>();
-        for(MultipartFile file : files) {
+
+        List<ImageDTO> savedImageDto = new ArrayList<>();
+        for (MultipartFile file : files) {
             try {
                 Image image = new Image();
                 image.setFileName(file.getOriginalFilename());
@@ -54,25 +57,25 @@ public class ImageService implements IImageService{
                 image.setImage(new SerialBlob(file.getBytes()));
                 image.setProduct(product);
 
+                String buildDownloadUrl = "/api/v1/images/image/download/";
+                String downloadUrl = buildDownloadUrl+image.getId();
+                image.setDownloadUrl(downloadUrl);
                 Image savedImage = imageRepository.save(image);
 
-                String buildDownloadUrl = "/api/v1/images/image/download";
-                String downloadUrl = buildDownloadUrl+savedImage.getId();
-                savedImage.setDownloadUrl(downloadUrl);
-
+                savedImage.setDownloadUrl(buildDownloadUrl+savedImage.getId());
                 imageRepository.save(savedImage);
 
-                ImageDTO imageDTO = new ImageDTO();
-                imageDTO.setImageId(savedImage.getId());
-                imageDTO.setImageName(savedImage.getFileName());
-                imageDTO.setDownloadUrl(savedImage.getDownloadUrl());
-                savedImageDTO.add(imageDTO);
+                ImageDTO imageDto = new ImageDTO();
+                imageDto.setImageId(savedImage.getId());
+                imageDto.setImageName(savedImage.getFileName());
+                imageDto.setDownloadUrl(savedImage.getDownloadUrl());
+                savedImageDto.add(imageDto);
 
-            } catch(IOException |SQLException e) {
+            }   catch(IOException | SQLException e){
                 throw new RuntimeException(e.getMessage());
             }
         }
-        return savedImageDTO;
+        return savedImageDto;
     }
 
     @Override
