@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -41,25 +40,23 @@ public class ImageController {
 
     @GetMapping("/image/download/{imageId}")
     public ResponseEntity<Resource> downloadImage(@PathVariable Long imageId) {
-        try {
-            Image image = imageService.getImageById(imageId);
-            ByteArrayResource resource = new ByteArrayResource(image.getImage().getBytes(1, (int) image.getImage().length()));
-            return ResponseEntity
-                    .ok()
-                    .contentType(MediaType.parseMediaType(image.getFileType()))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + image.getFileName() + "\"")
-                    .body(resource);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        Image image = imageService.getImageById(imageId);
+        byte[] data = image.getImage();
+        ByteArrayResource resource = new ByteArrayResource(data);
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.parseMediaType(image.getFileType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + image.getFileName() + "\"")
+                .body(resource);
     }
+
 
     @PutMapping(value = "/update/{imageId}",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse> updateImage(@PathVariable Long imageId, @RequestParam MultipartFile file) {
         try {
             Image image = imageService.getImageById(imageId);
-            if(image == null) {
+            if(image != null) {
                 imageService.updateImage(file, imageId);
                 return ResponseEntity.ok(new ApiResponse("Update Success!", null));
             }
@@ -73,7 +70,7 @@ public class ImageController {
     public ResponseEntity<ApiResponse> deleteImage(@PathVariable Long imageId) {
         try {
             Image image = imageService.getImageById(imageId);
-            if(image == null) {
+            if(image != null) {
                 imageService.deleteImageById(imageId);
                 return ResponseEntity.ok(new ApiResponse("Delete Success!", null));
             }
