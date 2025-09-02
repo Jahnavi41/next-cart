@@ -4,7 +4,6 @@ import dev.ju.nextcart.exceptions.BadRequestException;
 import dev.ju.nextcart.model.Cart;
 import dev.ju.nextcart.response.ApiResponse;
 import dev.ju.nextcart.service.cart.ICartService;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
