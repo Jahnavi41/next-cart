@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 @RequestMapping("${api.prefix}/cart")
 public class CartController {
 
+    public static final HttpStatus NOT_FOUND = HttpStatus.NOT_FOUND;
     private final ICartService cartService;
 
     public CartController(ICartService cartService) {
@@ -27,19 +28,27 @@ public class CartController {
             Cart cart = cartService.getCart(cartId);
             return ResponseEntity.ok(new ApiResponse("Success", cart));
         } catch (BadRequestException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
     @DeleteMapping("/{cartId}/clear")
     public ResponseEntity<ApiResponse> clearCart(@PathVariable Long cartId) {
-        cartService.clearCart(cartId);
-        return ResponseEntity.ok( new ApiResponse("Clear Cart success!", null));
+        try {
+            cartService.clearCart(cartId);
+            return ResponseEntity.ok(new ApiResponse("Clear Cart success!", null));
+        } catch(BadRequestException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
     }
 
     @GetMapping("/{cartId}/cart/totalPrice")
     public ResponseEntity<ApiResponse> getTotalAmount(@PathVariable Long cartId) {
-        BigDecimal totalPrice = cartService.getTotalPrice(cartId);
-        return ResponseEntity.ok(new ApiResponse("Total Price!", totalPrice));
+        try {
+            BigDecimal totalPrice = cartService.getTotalPrice(cartId);
+            return ResponseEntity.ok(new ApiResponse("Total Price!", totalPrice));
+        } catch(BadRequestException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
     }
 }
