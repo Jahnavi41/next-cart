@@ -24,11 +24,11 @@ public class Image {
     private String fileType;
 
     @Lob
-    private Blob image;
+    private byte[] image;
+
     private String downloadUrl;
 
     @ManyToOne
     @JoinColumn(name="product_id")
-    @JsonBackReference
     private Product product;
 }
