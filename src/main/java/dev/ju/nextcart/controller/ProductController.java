@@ -35,12 +35,8 @@ public class ProductController {
 
     @GetMapping("/getById/{id}")
     public ResponseEntity<ApiResponse> getProductById(@PathVariable Long id) {
-        try {
-            Product product = productService.getProductById(id);
-            return ResponseEntity.ok(new ApiResponse("Product found!", product));
-        } catch (BadRequestException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), NOT_FOUND));
-        }
+        Product product = productService.getProductById(id);
+        return ResponseEntity.ok(new ApiResponse("Product found!", product));
     }
 
     @PostMapping("/create")
