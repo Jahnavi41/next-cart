@@ -10,6 +10,7 @@ import dev.ju.nextcart.service.product.IProductService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 
 @Service
 public class CartItemService implements ICartItemService{
@@ -30,6 +31,9 @@ public class CartItemService implements ICartItemService{
     public void addCartItem(Long cartId, Long productId, int quantity) {
         Cart cart = cartService.getCart(cartId);
         Product product = productService.getProductById(productId);
+        if (cart.getCartItems() == null) {
+            cart.setCartItems(new HashSet<>());
+        }
         CartItem cartItem = cart.getCartItems()
                 .stream()
                 .filter(item -> item.getProduct().getId().equals(productId))
