@@ -4,6 +4,7 @@ import dev.ju.nextcart.exceptions.BadRequestException;
 import dev.ju.nextcart.model.Cart;
 import dev.ju.nextcart.repository.CartItemRepository;
 import dev.ju.nextcart.repository.CartRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -29,6 +30,7 @@ public class CartService implements ICartService {
         return cartRepository.save(cart);
     }
 
+    @Transactional
     @Override
     public void clearCart(Long id) {
         Cart cart = getCart(id);
@@ -46,8 +48,6 @@ public class CartService implements ICartService {
     @Override
     public Long initializeNewCart() {
         Cart cart = new Cart();
-        Long cartId = cartIdGenerator.incrementAndGet();
-        cart.setId(cartId);
         return cartRepository.save(cart).getId();
     }
 }
