@@ -25,6 +25,10 @@ public class Cart {
     @JsonManagedReference
     private Set<CartItem> cartItems;
 
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public void addItem(CartItem item) {
         this.cartItems.add(item);
         item.setCart(this);
@@ -40,7 +44,7 @@ public class Cart {
     private void updateTotalAmount() {
         this.totalAmount = cartItems.stream().map(item -> {
             BigDecimal unitPrice = item.getUnitPrice();
-            if(unitPrice == null) {
+            if (unitPrice == null) {
                 return BigDecimal.ZERO;
             }
             return unitPrice.multiply(BigDecimal.valueOf(item.getQuantity()));
